@@ -3,7 +3,6 @@ package redisorm
 import (
 	"encoding/json"
 	"errors"
-	"fmt"
 
 	"github.com/garyburd/redigo/redis"
 )
@@ -85,17 +84,16 @@ func Get(key string, obj interface{}) error {
 	return nil
 }
 
-func List(key string, objs interface{}) error {
+func List(key string) []string {
 	c := pool.Get()
 	defer c.Close()
 
-	jsonString, err := redis.String(c.Do("KEYS", key))
+	jsonStrings, err := redis.Strings(c.Do("KEYS", key))
 	if err != nil {
-		return err
+		return nil
 	}
-	fmt.Println(jsonString)
 
-	return nil
+	return jsonStrings
 }
 
 func Set(key string, obj interface{}) error {
