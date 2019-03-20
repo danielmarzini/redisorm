@@ -3,6 +3,8 @@ package redisorm
 import (
 	"encoding/json"
 	"errors"
+	"fmt"
+
 	"github.com/garyburd/redigo/redis"
 )
 
@@ -60,7 +62,7 @@ func (r *Redis) newPool() *redis.Pool {
 		MaxIdle:   r.conf.maxIdle,
 		MaxActive: r.conf.maxActive, // max number of connections
 		Dial: func() (redis.Conn, error) {
-			c, err := redis.Dial("tcp", r.conf.ip + ":" + r.conf.port)
+			c, err := redis.Dial("tcp", r.conf.ip+":"+r.conf.port)
 			if err != nil {
 				return c, err
 			}
@@ -80,6 +82,19 @@ func Get(key string, obj interface{}) error {
 	if err != nil {
 		return err
 	}
+	return nil
+}
+
+func List(key string, objs []interface{}) error {
+	c := pool.Get()
+	defer c.Close()
+
+	jsonString, err := redis.String(c.Do("KEYS", key))
+	if err != nil {
+		return err
+	}
+	fmt.Println(jsonString)
+
 	return nil
 }
 
