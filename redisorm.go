@@ -85,7 +85,7 @@ func Get(key string, obj interface{}) error {
 	return nil
 }
 
-func List(key string, objs []interface{}) error {
+func List(key string, objs interface{}) error {
 	c := pool.Get()
 	defer c.Close()
 
