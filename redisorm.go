@@ -84,6 +84,14 @@ func Get(key string, obj interface{}) error {
 	return nil
 }
 
+func Delete(key string) error {
+	c := pool.Get()
+	defer c.Close()
+
+	_, err := redis.String(c.Do("DEL", key))
+	return err
+}
+
 func List(key string) []string {
 	c := pool.Get()
 	defer c.Close()
